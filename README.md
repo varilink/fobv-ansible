@@ -1,3 +1,7 @@
-# The Friends of Bennerley Viaduct (FoBV)
+# FoBV - Ansible
 
-## Ansible
+David Williamson @ Varilink Computing Ltd
+
+------
+
+Ansible playbook(s) for management of [The Friends of Bennerley Viaduct website](https://www.bennerleyviaduct.org.uk/).
