@@ -1,0 +1,6 @@
+[submodule "roles"]
+	path = roles
+	url = git@github.com:varilink/libraries-ansible.git
+[submodule "wordpress"]
+	path = wordpress
+	url = git@github.com:varilink/fobv-wordpress.git
