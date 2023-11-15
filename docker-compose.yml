@@ -1,0 +1,19 @@
+# ------------------------------------------------------------------------------
+# docker-compose.yml
+# ------------------------------------------------------------------------------
+
+# This repository's project Docker Compose file. This is limited to required
+# extensions/overrides of Docker Composer services defined by the Docker Compose
+# files in the gimp and npm tools, included here as submodules.
+
+---
+
+version: "3.6"
+
+services:
+
+  gimp:
+
+    volumes:
+      - ./wordpress/gimp/:/gimp/
+      - ./wordpress/media/:/gimp/dist/
