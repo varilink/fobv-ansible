@@ -1,0 +1,68 @@
+# ------------------------------------------------------------------------------
+# host_vars/dev/public.yml
+# ------------------------------------------------------------------------------
+
+# Public Ansible variables specific to the dev host of the FoBV website
+
+---
+
+wp_subdomain: dev
+wp_version: "6.3.1"
+
+# User credentials
+wp_admin_password: "{{ wp_priv_admin_password }}"
+wp_database_password: "{{ wp_priv_database_password }}"
+
+# Additional WordPress configuration
+wp_config: |-
+
+  // The name of the current environment
+  define( 'FOBV_ENV', 'dev' );
+
+  // Action contexts for use with WordPress nonces
+  define( 'FOBV_DONATE_CONTEXT', {{ wp_priv_donate_context }} );
+  define( 'FOBV_GIFT_AID_CONTEXT', {{ wp_priv_gift_aid_context }} );
+  define( 'FOBV_JOIN_US_CONTEXT', {{ wp_priv_join_us_context }} );
+  define( 'FOBV_OPTIONS_CONTEXT', {{ wp_priv_options_context }} );
+  define( 'FOBV_SUBSCRIBE_CONTEXT', {{ wp_priv_subscribe_context }} );
+
+  // Mailchimp integration
+  define( 'FOBV_MAILCHIMP_API_ROOT', 'us12.api.mailchimp.com/3.0' );
+  define( 'FOBV_MAILCHIMP_API_KEY', '{{ wp_priv_mailchimp_api_key }}' );
+  define( 'FOBV_MAILCHIMP_LIST_ID', '{{ wp_priv_mailchimp_test_list_id }}' );
+  define( 'FOBV_MAILCHIMP_TEST_LIST_ID', '{{ wp_priv_mailchimp_test_list_id }}' );
+  define( 'FOBV_MAILCHIMP_MEMBERS_INTEREST_CATEGORY', '{{ wp_priv_mailchimp_members_interest_category }}' );
+  define( 'FOBV_MAILCHIMP_VOLUNTEERING_INTEREST_CATEGORY', '{{ wp_priv_mailchimp_members_interest_category }}' );
+
+  // PayPal integration
+  define( 'FOBV_PAYPAL_API_DOMAIN', 'https://api-m.sandbox.paypal.com' );
+  define( 'FOBV_PAYPAL_APP_CLIENT_ID', '{{ wp_priv_paypal_app_client_id }}' );
+  define( 'FOBV_PAYPAL_BRAND_NAME', 'The Friends of Bennerley Viaduct (Dev)' );
+  define( 'FOBV_PAYPAL_APP_SECRET', '{{ wp_priv_paypal_app_secret }}' );
+
+  // reCAPTCHA site key
+  define( 'VL_RECAPTCHA_SITE_KEY', '6LdpFqcZAAAAAKRjxMkXmIS3ABny6VUVlnbc9AcB' );
+  define( 'VL_RECAPTCHA_SECRET_KEY', '{{ wp_priv_recaptcha_secret_key }}' );
+
+wp_themes:
+
+  - src: wordpress/theme/
+    dest: fobv-site/
+    rsync_opts:
+      - "--exclude=/node_modules/"
+      - "--exclude=/package-lock.json"
+      - "--exclude=/package.json"
+      - "--delete-excluded"
+
+  - src: "wordpress/theme/node_modules/@fortawesome/\
+      fontawesome-free/css/all.min.css"
+    dest: fobv-site/assets/css/fontawesome-free.css
+    rsync_path: "sudo mkdir /var/www/dev.bennerleyviaduct.org.uk/\
+      html/wp-content/themes/fobv-site/assets/css && sudo chown \
+      www-data:www-data /var/www/dev.bennerleyviaduct.org.uk/html/\
+      wp-content/themes/fobv-site/assets/css && sudo rsync"
+
+  - src: wordpress/theme/node_modules/@fortawesome/fontawesome-free/webfonts/
+    dest: fobv-site/assets/webfonts/
+
+wp_reverse_proxy_pass_port: 8082

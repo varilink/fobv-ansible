@@ -1,0 +1,98 @@
+# ------------------------------------------------------------------------------
+# host_vars/prod4/public.yml
+# ------------------------------------------------------------------------------
+
+# Public Ansible variables specific to the prod4 host of the FoBV website
+
+---
+
+wp_subdomain: www
+wp_version: "6.3.1"
+
+# User credentials
+wp_admin_password: "{{ wp_priv_admin_password }}"
+wp_database_password: "{{ wp_priv_database_password }}"
+
+# Additional WordPress configuration
+wp_config: |-
+
+  // The name of the current environment
+  define( 'FOBV_ENV', 'live' );
+
+  // Action contexts for use with WordPress nonces
+  define( 'FOBV_DONATE_CONTEXT', {{ wp_priv_donate_context }} );
+  define( 'FOBV_GIFT_AID_CONTEXT', {{ wp_priv_gift_aid_context }} );
+  define( 'FOBV_JOIN_US_CONTEXT', {{ wp_priv_join_us_context }} );
+  define( 'FOBV_OPTIONS_CONTEXT', {{ wp_priv_options_context }} );
+  define( 'FOBV_SUBSCRIBE_CONTEXT', {{ wp_priv_subscribe_context }} );
+
+  // Mailchimp integration
+  define( 'FOBV_MAILCHIMP_API_ROOT', 'us12.api.mailchimp.com/3.0' );
+  define( 'FOBV_MAILCHIMP_API_KEY', '{{ wp_priv_mailchimp_api_key }}' );
+  define( 'FOBV_MAILCHIMP_LIST_ID', '{{ wp_priv_mailchimp_list_id }}' );
+  define( 'FOBV_MAILCHIMP_TEST_LIST_ID', '{{ wp_priv_mailchimp_test_list_id }}' );
+  define( 'FOBV_MAILCHIMP_MEMBERS_MERGE_FIELD', '{{ wp_priv_mailchimp_members_merge_field }}' );
+  define( 'FOBV_MAILCHIMP_VOLUNTEERING_MERGE_FIELD', '{{ wp_priv_mailchimp_volunteering_merge_field }}' );
+
+  // PayPal integration
+  define( 'FOBV_PAYPAL_BRAND_NAME', 'The Friends of Bennerley Viaduct' );
+  define( 'FOBV_PAYPAL_API_DOMAIN', 'https://api-m.paypal.com' );
+  define( 'FOBV_PAYPAL_APP_CLIENT_ID', '{{ wp_priv_paypal_app_client_id }}' );
+  define( 'FOBV_PAYPAL_APP_SECRET', '{{ wp_priv_paypal_app_secret }}' );
+  define( 'FOBV_PAYPAL_WEBHOOK_ID', '{{ wp_priv_paypal_webhook_id }}' );
+
+  // reCAPTCHA site key
+  define( 'VL_RECAPTCHA_SITE_KEY', '6LdpFqcZAAAAAKRjxMkXmIS3ABny6VUVlnbc9AcB' );
+  define( 'VL_RECAPTCHA_SECRET_KEY', '{{ wp_priv_recaptcha_secret_key }}' );
+
+wp_plugins:
+
+  - src: wordpress/plugins/fobv-site/
+    dest: fobv-site/
+
+  - src: wordpress/plugins/fobv-event/
+    dest: fobv-event/
+    rsync_opts:
+      - "--exclude=/src/"
+      - "--exclude=/node_modules/"
+      - "--exclude=/package-lock.json"
+      - "--exclude=/package.json"
+      - "--delete-excluded"
+
+  - src: wordpress/varilink-plugins/varilink-forms/
+    dest: varilink-forms/
+
+  - src: wordpress/varilink-plugins/varilink-log-writer/
+    dest: varilink-log-writer/
+
+  - src: wordpress/varilink-plugins/varilink-mailchimp/
+    dest: varilink-mailchimp/
+
+  - src: wordpress/varilink-plugins/varilink-paypal/
+    dest: varilink-paypal/
+
+  - src: wordpress/varilink-plugins/varilink-recaptcha/
+    dest: varilink-recaptcha/
+
+wp_themes:
+
+  - src: wordpress/theme/
+    dest: fobv-site/
+    rsync_opts:
+      - "--exclude=/node_modules/"
+      - "--exclude=/package-lock.json"
+      - "--exclude=/package.json"
+      - "--delete-excluded"
+
+  - src: "wordpress/theme/node_modules/@fortawesome/\
+      fontawesome-free/css/all.min.css"
+    dest: fobv-site/assets/css/fontawesome-free.css
+    rsync_path: "sudo mkdir /var/www/www.bennerleyviaduct.org.uk/\
+      html/wp-content/themes/fobv-site/assets/css && sudo chown \
+      www-data:www-data /var/www/www.bennerleyviaduct.org.uk/html/\
+      wp-content/themes/fobv-site/assets/css && sudo rsync"
+
+  - src: wordpress/theme/node_modules/@fortawesome/fontawesome-free/webfonts/
+    dest: fobv-site/assets/webfonts/
+
+wp_reverse_proxy_pass_port: 8081

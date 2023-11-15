@@ -1,0 +1,40 @@
+# ------------------------------------------------------------------------------
+# group_vars/all/public.yml
+# ------------------------------------------------------------------------------
+
+# Public Ansible variables shared by all hosts for instances of the FoBV website
+
+---
+
+domain_name: bennerleyviaduct.org.uk
+domain_organisation: The Friends of Bennerley Viaduct
+wp_project_name: fobv
+
+wp_plugins:
+
+  - src: wordpress/plugins/fobv-site/
+    dest: fobv-site/
+
+  - src: wordpress/plugins/fobv-event/
+    dest: fobv-event/
+    rsync_opts:
+      - "--exclude=/src/"
+      - "--exclude=/node_modules/"
+      - "--exclude=/package-lock.json"
+      - "--exclude=/package.json"
+      - "--delete-excluded"
+
+  - src: wordpress/varilink-plugins/varilink-forms/
+    dest: varilink-forms/
+
+  - src: wordpress/varilink-plugins/varilink-log-writer/
+    dest: varilink-log-writer/
+
+  - src: wordpress/varilink-plugins/varilink-mailchimp/
+    dest: varilink-mailchimp/
+
+  - src: wordpress/varilink-plugins/varilink-paypal/
+    dest: varilink-paypal/
+
+  - src: wordpress/varilink-plugins/varilink-recaptcha/
+    dest: varilink-recaptcha/
