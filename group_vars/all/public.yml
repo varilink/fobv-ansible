@@ -38,3 +38,27 @@ wp_plugins:
 
   - src: wordpress/varilink-plugins/varilink-recaptcha/
     dest: varilink-recaptcha/
+
+wp_themes:
+
+  - src: wordpress/theme/
+    dest: fobv-site/
+    rsync_opts:
+      - "--exclude=/.npm/"
+      - "--exclude=/node_modules/"
+      - "--exclude=/for-theme-json.scss"
+      - "--exclude=/.gitignore"
+      - "--exclude=/package-lock.json"
+      - "--exclude=/package.json"
+      - "--delete-excluded"
+
+  - src: "wordpress/theme/node_modules/@fortawesome/\
+      fontawesome-free/css/all.min.css"
+    dest: fobv-site/assets/css/fontawesome-free.css
+    rsync_path: "sudo mkdir /var/www/{{ wp_subdomain }}.bennerleyviaduct.org.uk/\
+      html/wp-content/themes/fobv-site/assets/css && sudo chown \
+      www-data:www-data /var/www/{{ wp_subdomain }}.bennerleyviaduct.org.uk/html/\
+      wp-content/themes/fobv-site/assets/css && sudo rsync"
+
+  - src: wordpress/theme/node_modules/@fortawesome/fontawesome-free/webfonts/
+    dest: fobv-site/assets/webfonts/

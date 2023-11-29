@@ -44,25 +44,4 @@ wp_config: |-
   define( 'VL_RECAPTCHA_SITE_KEY', '6LdpFqcZAAAAAKRjxMkXmIS3ABny6VUVlnbc9AcB' );
   define( 'VL_RECAPTCHA_SECRET_KEY', '{{ wp_priv_recaptcha_secret_key }}' );
 
-wp_themes:
-
-  - src: wordpress/theme/
-    dest: fobv-site/
-    rsync_opts:
-      - "--exclude=/node_modules/"
-      - "--exclude=/package-lock.json"
-      - "--exclude=/package.json"
-      - "--delete-excluded"
-
-  - src: "wordpress/theme/node_modules/@fortawesome/\
-      fontawesome-free/css/all.min.css"
-    dest: fobv-site/assets/css/fontawesome-free.css
-    rsync_path: "sudo mkdir /var/www/dev.bennerleyviaduct.org.uk/\
-      html/wp-content/themes/fobv-site/assets/css && sudo chown \
-      www-data:www-data /var/www/dev.bennerleyviaduct.org.uk/html/\
-      wp-content/themes/fobv-site/assets/css && sudo rsync"
-
-  - src: wordpress/theme/node_modules/@fortawesome/fontawesome-free/webfonts/
-    dest: fobv-site/assets/webfonts/
-
 wp_reverse_proxy_pass_port: 8082

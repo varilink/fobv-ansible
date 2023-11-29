@@ -106,30 +106,6 @@ wp_sites:
       define( 'VL_RECAPTCHA_SITE_KEY', '6LdpFqcZAAAAAKRjxMkXmIS3ABny6VUVlnbc9AcB' );
       define( 'VL_RECAPTCHA_SECRET_KEY', '{{ wp_priv_recaptcha_secret_key }}' );
 
-    themes:
-
-      - src: wordpress/theme/
-        dest: fobv-site/
-        rsync_opts:
-          - "--exclude=/node_modules/"
-          - "--exclude=/package-lock.json"
-          - "--exclude=/package.json"
-          - "--delete-excluded"
-          - "--filter='protect /assets/css/'"
-          - "--filter='protect /assets/webfonts/'"
-
-      - src: "wordpress/theme/node_modules/@fortawesome/\
-          fontawesome-free/css/all.min.css"
-        dest: fobv-site/assets/css/fontawesome-free.css
-        rsync_path: "sudo mkdir -p /var/www/staging.bennerleyviaduct.org.uk/\
-          html/wp-content/themes/fobv-site/assets/css && sudo chown \
-          www-data:www-data /var/www/staging.bennerleyviaduct.org.uk/html/\
-          wp-content/themes/fobv-site/assets/css && sudo -u www-data rsync"
-
-      - src: "wordpress/theme/node_modules/@fortawesome/\
-          fontawesome-free/webfonts/"
-        dest: fobv-site/assets/webfonts/
-
     reverse_proxy_pass_port: 8088
 
   test:
@@ -169,29 +145,5 @@ wp_sites:
       // reCAPTCHA site key
       define( 'VL_RECAPTCHA_SITE_KEY', '6LdpFqcZAAAAAKRjxMkXmIS3ABny6VUVlnbc9AcB' );
       define( 'VL_RECAPTCHA_SECRET_KEY', '{{ wp_priv_recaptcha_secret_key }}' );
-
-    themes:
-
-      - src: wordpress/theme/
-        dest: fobv-site/
-        rsync_opts:
-          - "--exclude=/node_modules/"
-          - "--exclude=/package-lock.json"
-          - "--exclude=/package.json"
-          - "--delete-excluded"
-          - "--filter='protect /assets/css/'"
-          - "--filter='protect /assets/webfonts/'"
-
-      - src: "wordpress/theme/node_modules/@fortawesome/\
-          fontawesome-free/css/all.min.css"
-        dest: fobv-site/assets/css/fontawesome-free.css
-        rsync_path: "sudo mkdir -p /var/www/test.bennerleyviaduct.org.uk/\
-          html/wp-content/themes/fobv-site/assets/css && sudo chown \
-          www-data:www-data /var/www/test.bennerleyviaduct.org.uk/html/\
-          wp-content/themes/fobv-site/assets/css && sudo -u www-data rsync"
-
-      - src: "wordpress/theme/node_modules/@fortawesome/\
-          fontawesome-free/webfonts/"
-        dest: fobv-site/assets/webfonts/
 
     reverse_proxy_pass_port: 8089
