@@ -1,0 +1,16 @@
+# ------------------------------------------------------------------------------
+# .gitignore
+# ------------------------------------------------------------------------------
+
+# Backup that we're using to restore to sites
+/backup
+
+# Ansible retry files
+/*.retry
+
+# Ansible variables files wherever they may occur in /group_vars and /host_vars
+# that contain sensitive data
+private.yml
+
+# Folder containing WordPress WXR files that we may want to import from
+/wxr
