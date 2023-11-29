@@ -18,10 +18,13 @@ wp_plugins:
   - src: wordpress/plugins/fobv-event/
     dest: fobv-event/
     rsync_opts:
-      - "--exclude=/src/"
+      - "--exclude=/.npm/"
       - "--exclude=/node_modules/"
+      - "--exclude=/src/"
+      - "--exclude=/.gitignore"
       - "--exclude=/package-lock.json"
       - "--exclude=/package.json"
+      - "--exclude=/readme.txt"
       - "--delete-excluded"
 
   - src: wordpress/varilink-plugins/varilink-forms/
