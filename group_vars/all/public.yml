@@ -60,10 +60,16 @@ wp_themes:
   - src: "wordpress/theme/node_modules/@fortawesome/\
       fontawesome-free/css/all.min.css"
     dest: fobv-site/assets/css/fontawesome-free.css
-    rsync_path: "sudo mkdir /var/www/{{ wp_subdomain }}.bennerleyviaduct.org.uk/\
-      html/wp-content/themes/fobv-site/assets/css && sudo chown \
-      www-data:www-data /var/www/{{ wp_subdomain }}.bennerleyviaduct.org.uk/html/\
-      wp-content/themes/fobv-site/assets/css && sudo rsync"
+    rsync_path: "\
+      sudo mkdir -p \
+      /var/www/{{ wp_subdomain }}.bennerleyviaduct.org.uk/html\
+      /wp-content/themes/fobv-site/assets/css \
+      && \
+      sudo chown www-data:www-data \
+      /var/www/{{ wp_subdomain }}.bennerleyviaduct.org.uk/html/\
+      wp-content/themes/fobv-site/assets/css \
+      && \
+      sudo rsync"
 
   - src: wordpress/theme/node_modules/@fortawesome/fontawesome-free/webfonts/
     dest: fobv-site/assets/webfonts/
