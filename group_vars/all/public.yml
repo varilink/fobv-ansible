@@ -54,6 +54,8 @@ wp_themes:
       - "--exclude=/package-lock.json"
       - "--exclude=/package.json"
       - "--delete-excluded"
+      - "--filter='protect /assets/css/'"
+      - "--filter='protect /assets/webfonts/'"
 
   - src: "wordpress/theme/node_modules/@fortawesome/\
       fontawesome-free/css/all.min.css"
