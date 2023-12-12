@@ -1,0 +1,83 @@
+# ------------------------------------------------------------------------------
+# enable-form-testing.yml
+# ------------------------------------------------------------------------------
+
+# This playbook is specific to this project rather than being a shared playbook
+# from the ./playbooks directory. It is also specific to live ('www')
+# environment for The FoBV website. It puts that website into "form testing"
+# mode to facilitate end-to-end testing of the processes initiated by the
+# "Donate", "Join Us" and "Subscribe" forms.
+#
+# This playbook enables form testing mode by doing two things:
+#  1. Replacing the notification email addresses for those processes with the
+#     site's admin email address.
+#  2. Modifying the site's configuration to use test Mailchimp audience list and
+#     the PayPal sandbox facility.
+#
+# This comes in handy for testing the processes after an implementation without
+# external impacts.
+#
+# Before it replaces the notification email addresses, this playbook it stores
+# their current values on the controller so that they can be restored by the
+# disable-form-testing.yml playbook.
+
+---
+
+- hosts: prod4
+
+  vars:
+
+    processes: [ 'donate', 'join_us', 'subscribe' ]
+
+  tasks:
+
+    # We use set-site-facts from the wordpress role to set the wp_path fact
+    - ansible.builtin.import_role:
+        name: wordpress
+        tasks_from: set-site-facts
+
+    - name: Get the current values for the notification email addresses options
+      ansible.builtin.command: >-
+        wp --path={{ wp_path }} option get
+        {{ 'fobv_' + process + '_notification_email_addresses' }}
+      loop: "{{ processes }}"
+      loop_control:
+        loop_var: process
+      become: yes
+      become_user: www-data
+      changed_when: false
+      register: current_values
+
+    - name: >-
+        Store the current values for the notification email addresses options on
+        the controller
+      ansible.builtin.copy:
+        content: "{{ result.stdout }}"
+        dest: "\
+          {{ 'fobv_' + result.process + '_notification_email_addresses' }}.txt"
+      loop: "{{ current_values.results }}"
+      loop_control:
+        loop_var: result
+      delegate_to: localhost
+
+    - block:
+
+        - name: Set the notification email addresses to the admin email only
+          ansible.builtin.command: >-
+            wp --path={{ wp_path }} option update
+            {{ 'fobv_' + process + '_notification_email_addresses' }}
+            {{ wp_admin_email | default(admin_user_email) }}
+          loop: "{{ processes }}"
+          loop_control:
+            loop_var: process
+
+        - name: >-
+            Update the WordPress configuration to integrate with test versions
+            of third party services
+          ansible.builtin.blockinfile:
+            path: "{{ wp_path }}/wp-config.php"
+            marker: "# {mark} ANSIBLE MANAGED SITE SPECIFIC BLOCK"
+            block: "{{ wp_form_testing_config }}"
+
+      become: yes
+      become_user: www-data

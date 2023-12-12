@@ -1,0 +1,43 @@
+# ------------------------------------------------------------------------------
+# disable-form-testing.yml
+# ------------------------------------------------------------------------------
+
+# This playbook disables "form testing" mode - see comments within its
+# counterpart playbook in enable-form-testing.yml.
+
+---
+
+- hosts: prod4
+
+  tasks:
+
+    # We use set-site-facts from the wordpress role to set the wp_path fact
+    - ansible.builtin.import_role:
+        name: wordpress
+        tasks_from: set-site-facts
+
+    - block:
+
+        - name: >-
+            Restore the stored values for the notification email addresses
+            options
+          ansible.builtin.command: >-
+            wp --path={{ wp_path }} option update
+            {{ option }} "{{ lookup( 'ansible.builtin.file', option_file ) }}"
+          vars:
+            option: "{{ option_file | basename | splitext | first }}"
+          with_fileglob:
+            - "fobv_*_notification_email_addresses.txt"
+          loop_control:
+            loop_var: option_file
+
+        - name: >-
+            Update the WordPress configuration to restore integration with live
+            versions of third party services
+          ansible.builtin.blockinfile:
+            path: "{{ wp_path }}/wp-config.php"
+            marker: "# {mark} ANSIBLE MANAGED SITE SPECIFIC BLOCK"
+            block: "{{ wp_config }}"
+
+      become: yes
+      become_user: www-data

@@ -14,3 +14,6 @@ private.yml
 
 # Folder containing WordPress WXR files that we may want to import from
 /wxr
+
+# Stored current notification email addresses used to disable form testing mode
+/fobv_*_notification_email_addresses.txt
